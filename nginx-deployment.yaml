@@ -1,0 +1,65 @@
+# apiVersion: apps/v1
+# kind: Deployment
+# metadata:
+#   name: nginx-deployment
+#   namespace: training-app-namespace
+# spec:
+#   replicas: 1
+#   selector:
+#     matchLabels:
+#       app: nginx
+#   template:
+#     metadata:
+#       labels:
+#         app: nginx
+#     spec:
+#       containers:
+#         - name: nginx
+#           image: nginx:latest
+#           ports:
+#             - containerPort: 80
+#           volumeMounts:
+#             - name: nginx-config-volume
+#               mountPath: /etc/nginx/nginx.conf
+#               subPath: nginx.conf
+#       volumes:
+#         - name: nginx-config-volume
+#           configMap:
+#             name: nginx-config
+
+# ---
+# apiVersion: v1
+# kind: Service
+# metadata:
+#   name: nginx-service
+#   namespace: training-app-namespace
+# spec:
+#   selector:
+#     app: nginx
+#   ports:
+#     - protocol: TCP
+#       port: 80
+#       targetPort: 80
+#       nodePort: 30000
+#   type: NodePort
+
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: nginx-ingress
+  namespace: training-app-namespace
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+spec:
+  rules:
+    - host: you-app-host
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: nginx-service
+                port:
+                  number: 80

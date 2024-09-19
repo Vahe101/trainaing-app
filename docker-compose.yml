@@ -1,0 +1,66 @@
+version: '3'
+
+services:
+  postgres:
+    init: true
+    image: postgres:latest
+    container_name: training-app-postgres-db
+    networks:
+      - 'training-app'
+    ports:
+      - '5432:5432'
+    environment:
+      POSTGRES_PASSWORD: testpassword
+      POSTGRES_USER: testuser
+      POSTGRES_DB: training-app
+    volumes:
+      - .:/postgres
+
+  training-api-gateway:
+    init: true
+    image: training-app-api-gateway
+    container_name: training-app-api-gateway
+    volumes:
+      - .:/training-api-gateway
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    networks:
+      - training-app
+    depends_on:
+      - postgres
+      - rabbitmq
+    ports:
+      - '3000:3000'
+    env_file:
+      - .env
+
+  rabbitmq:
+    init: true
+    image: rabbitmq:3-management
+    container_name: training-app-rabbitmq
+    volumes:
+      - .:/rabbitmq
+    environment:
+      RABBITMQ_DEFAULT_USER: rabbitmq
+      RABBITMQ_DEFAULT_PASS: rabbitmq
+    ports:
+      - 5672:5672
+      - 5673:5673
+      - 15672:15672
+    networks:
+      - 'training-app'
+
+  # nginx:
+  #   init: true
+  #   image: nginx-proxy
+  #   container_name: nginx-proxy
+  #   ports:
+  #     - '8080:80'
+  #   depends_on:
+  #     - training-api-gateway
+
+networks:
+  training-app:
+    name: training-app
+    external: false
