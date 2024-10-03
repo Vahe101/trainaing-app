@@ -1,8 +1,8 @@
 import { Module } from '@nestjs/common';
 import { CarModule } from './car/car.module';
-import { DatabaseModule } from './database/database.module';
+import { SharedModule } from './shared/shared.module';
 
 @Module({
-  imports: [DatabaseModule, CarModule],
+  imports: [SharedModule, CarModule],
 })
 export class CollectorModule {}

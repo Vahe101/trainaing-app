@@ -1,0 +1,1 @@
+export const CREATE_MOCK_CAR = 'CREATE_MOCK_CAR';

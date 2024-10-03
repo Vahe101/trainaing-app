@@ -3,7 +3,7 @@ version: '3'
 services:
   postgres:
     init: true
-    image: postgres:latest
+    image: postgis/postgis:latest
     container_name: training-app-postgres-db
     networks:
       - 'training-app'

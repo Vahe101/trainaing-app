@@ -1,19 +1,18 @@
+import { Cron } from '@nestjs/schedule';
 import { Injectable } from '@nestjs/common';
 import { CREATE_MOCK_CAR } from 'src/utils';
 import { ProducerService } from 'src/common';
-import { CAR_INITIAL_SEED_QUANTITY } from 'src/common/constants';
+import { MOCK_CAR_PER_MINUTE_QUANTITY } from 'src/common/constants';
 
 @Injectable()
-export class CarSeedService {
+export class CarCronService {
   constructor(private readonly producer: ProducerService) {}
 
-  async onModuleInit() {
-    await this.seedCars();
-  }
-
-  private async seedCars() {
+  // For Run every minute my cron
+  @Cron('*/1 * * * *')
+  async generateCarEvent() {
     await this.producer.publishEvent(CREATE_MOCK_CAR, {
-      quantity: CAR_INITIAL_SEED_QUANTITY,
+      quantity: MOCK_CAR_PER_MINUTE_QUANTITY,
     });
   }
 }

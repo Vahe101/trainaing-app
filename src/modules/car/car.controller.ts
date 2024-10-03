@@ -1,6 +1,6 @@
 import { Controller, Get, Query } from '@nestjs/common';
+import { Car } from '../entities';
 import { CarService } from './car.service';
-import { Car } from './entities';
 
 @Controller('cars')
 export class CarController {
